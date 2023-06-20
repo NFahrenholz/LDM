@@ -1,4 +1,5 @@
 import os.path
+import torch
 
 from diffusers import AutoencoderKL, UNet2DModel, DDPMScheduler
 from torch.utils.data import DataLoader
