@@ -52,6 +52,8 @@ def make_grid(images, rows, cols):
     for i, image in enumerate(images):
         grid.paste(image, box=(i%cols*w, i//cols*h))
     return grid
+
+@torch.no_grad()
 def evaluate(epoch, pipeline):
     images = pipeline(
         batch_size= config.eval_bs,

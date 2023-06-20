@@ -34,8 +34,9 @@ def train():
             images = images.to(device)
 
             # Encode the images into the latent space
-            latent_space = autoencoder.encode(images).latent_dist.sample() * config.latent_scaling_factor
-            latent_space = latent_space.to(device)
+            with torch.no_grad():
+                latent_space = autoencoder.encode(images).latent_dist.sample() * config.latent_scaling_factor
+                latent_space = latent_space.to(device)
 
             # Sample noise to add to the images
             noise = torch.randn(latent_space.shape).to(device)
