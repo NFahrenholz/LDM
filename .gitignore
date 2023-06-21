@@ -110,3 +110,4 @@ venv.bak/
 /LatentDiffusion/taming/
 test*
 /LatentDiffusion/vqgan/
+/LatentDiffusion/config.py
