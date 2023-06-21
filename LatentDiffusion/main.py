@@ -1,7 +1,12 @@
-from diffusers import AutoencoderKL
+from diffusers import AutoencoderKL, DDPMScheduler, UNet2DModel
 from PIL import Image
+from tqdm.auto import tqdm
 import torch
 import torchvision.transforms as T
+import matplotlib.pyplot as plt
+import os
+
+from config import config
 
 
 def pil_to_latent(img):
@@ -23,14 +28,40 @@ def latent_to_pil(ls):
     pil_images = [Image.fromarray(img) for img in imgs]
     return pil_images
 
-device = "cuda"
-vae = AutoencoderKL.from_pretrained("stabilityai/sd-vae-ft-ema", torch_dtype=torch.float16).to(device)
+def make_grid(images, rows, cols):
+    w, h = images[0].size
+    grid = Image.new('RGB', size=(cols*w, rows*h))
+    for i, image in enumerate(images):
+        grid.paste(image, box=(i%cols*w, i//cols*h))
+    return grid
+
+device = config.device
+
+vae = AutoencoderKL.from_pretrained("stabilityai/sd-vae-ft-ema").to(device)
 vae.eval()
 
-img = Image.open("../data/Video01/Images/Video1_frame000090.png").convert('RGB').resize((256, 256))
-ls = pil_to_latent(img)
+model = UNet2DModel.from_pretrained(config.unet_path).to(device)
+model.eval()
 
-print(ls.shape)
+scheduler = DDPMScheduler(num_train_timesteps=1000, beta_start=1e-4, beta_end=0.02)
 
-d_img = latent_to_pil(ls)
-d_img[0].show()
+bs = config.eval_bs
+
+scheduler.set_timesteps(config.sample_timesteps)
+
+latents = torch.randn((bs, config.ls_channels, config.ls_size, config.ls_size)).to(device).half() * scheduler.init_noise_sigma
+
+for i, ts in enumerate(tqdm(scheduler.timesteps)):
+    inp = scheduler.scale_model_input(latents, ts)
+
+    with torch.no_grad():
+        noise_pred = model(inp, ts).sample
+
+    latents = scheduler.step(noise_pred, ts, latents).prev_sample
+
+imgs = latent_to_pil(latents)
+imgs_grid = make_grid(imgs, rows=4, cols=4)
+
+test_dir = os.path.join(config.output_dir, "samples")
+os.makedirs(test_dir, exist_ok=True)
+imgs_grid.save(f"sampled_{config.sample_timesteps}.png")

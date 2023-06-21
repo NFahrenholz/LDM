@@ -6,6 +6,7 @@ class TrainingConfig:
 
     dataset_path = "../data/DiffusionDataset/images.csv"
     output_dir = "results/"
+    unet_path = "results/unet"
 
     image_size = 256
     ls_size = 32
@@ -21,5 +22,7 @@ class TrainingConfig:
 
     save_image_epochs = 25
     save_model_epochs = 25
+
+    sample_timesteps = 50
 
 config = TrainingConfig()
