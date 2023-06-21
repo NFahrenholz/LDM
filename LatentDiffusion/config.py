@@ -2,17 +2,17 @@ from dataclasses import dataclass
 
 @dataclass
 class TrainingConfig:
-    device = "cuda"
+    device = "cuda:0"
 
-    dataset_path = "../data/DiffusionDataset/images.csv"
-    output_dir = "results/"
+    dataset_path = "../data/images.csv"
+    output_dir = "./results/"
     unet_path = "results/unet"
 
     image_size = 256
     ls_size = 32
     ls_channels = 4
 
-    train_bs = 1
+    train_bs = 32
     eval_bs = 16
     num_epochs = 100
     learning_rate = 1e-4

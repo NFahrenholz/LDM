@@ -49,7 +49,7 @@ bs = config.eval_bs
 
 scheduler.set_timesteps(config.sample_timesteps)
 
-latents = torch.randn((bs, config.ls_channels, config.ls_size, config.ls_size)).to(device).half() * scheduler.init_noise_sigma
+latents = torch.randn((bs, config.ls_channels, config.ls_size, config.ls_size)).to(device) * scheduler.init_noise_sigma
 
 for i, ts in enumerate(tqdm(scheduler.timesteps)):
     inp = scheduler.scale_model_input(latents, ts)
