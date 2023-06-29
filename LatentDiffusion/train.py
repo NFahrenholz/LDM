@@ -36,7 +36,8 @@ def train():
             bs = images.shape[0]
 
             images = images.to(device)
-            cond = x_transformer(cond).to(device)
+            cond = cond.to(device)
+            cond = x_transformer(cond)
 
             # Encode the images into the latent space
             with torch.no_grad():

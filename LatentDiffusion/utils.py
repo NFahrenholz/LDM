@@ -100,7 +100,7 @@ def get_xtransformer():
         )
     )
 
-    return x_transformer
+    return x_transformer.to(config.device)
 
 def get_bboxes(root):
     bboxes = []
