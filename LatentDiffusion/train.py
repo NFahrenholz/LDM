@@ -30,8 +30,6 @@ def train():
         progress_bar = tqdm(total=len(dataloader))
         progress_bar.set_description(f"Epoch {epoch}")
 
-        evaluate(epoch, autoencoder, model, scheduler, x_transformer)
-
         for step, (images, cond) in enumerate(dataloader):
             # set batch size to the amount of images got by dataloader
             # to circumvent errors in last batch
@@ -55,7 +53,7 @@ def train():
 
             # Predict the noise residual
             # If AMP is enabled the forward pass is run under autocast
-            with torch.autocast(device_type=device, dtype=config.amp_dtype, enabled=config.use_amp):
+            with torch.autocast(device_type="cuda", dtype=config.amp_dtype, enabled=config.use_amp):
                 noise_pred = model(noisy_ls, timesteps, cond, return_dict=False)[0]
                 loss = F.mse_loss(noise_pred, noise)
 
