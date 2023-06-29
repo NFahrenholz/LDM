@@ -174,6 +174,7 @@ def evaluate(epoch, autoencoder, model, scheduler, x_transformer):
 
         cond[i, :len(transformed['bboxes']*5)] = torch.IntTensor(transformed['bboxes']).flatten()
 
+    cond = cond.to(device)
     cond = x_transformer(cond).to(device)
 
     # Create the "dataset" of real images
