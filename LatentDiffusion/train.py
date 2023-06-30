@@ -8,7 +8,7 @@ from tqdm.auto import tqdm
 from utils import *
 from config import config
 
-def train():
+def train(args):
     device = config.device
 
     model, autoencoder, scheduler = get_conditional_model()
@@ -25,8 +25,17 @@ def train():
         num_training_steps=(len(dataloader) * config.num_epochs),
     )
 
+    start = 0
+    if args.model is not None:
+        checkpoint = torch.load(args.model)
+
+        model.load_state_dict(checkpoint['model_state_dict'])
+        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        start = checkpoint['epoch']
+        scaler.load_state_dict(checkpoint['scaler_state_dict'])
+
     global_step = 0
-    for epoch in range(config.num_epochs):
+    for epoch in range(start, config.num_epochs):
         progress_bar = tqdm(total=len(dataloader))
         progress_bar.set_description(f"Epoch {epoch}")
 
@@ -42,7 +51,7 @@ def train():
             # Encode the images into the latent space
             with torch.no_grad():
                 latent_space = autoencoder.encode(images).latent_dist.sample()
-                latent_space = latent_space.to(device)
+                latent_space = latent_space.to(device) * 0.18215
 
             # Sample noise to add to the images
             noise = torch.randn(latent_space.shape).to(device)
@@ -76,11 +85,19 @@ def train():
             evaluate(epoch, autoencoder, model, scheduler, x_transformer)
 
         if (epoch + 1) % config.save_model_epochs == 0 or epoch == config.num_epochs - 1:
-            state = {'epoch': epoch,
+            state = {'epoch': epoch+1,
                      'model_state_dict': model.state_dict(),
                      'optimizer_state_dict': optimizer.state_dict(),
                      'scaler_state_dict': scaler.state_dict()}
-            torch.save(state, os.path.join(config.output_dir, f"{epoch}_ckpt.pt"))
+            torch.save(state, os.path.join(config.output_dir, f"{epoch+1}_ckpt.pt"))
 
 if __name__ == '__main__':
-    train()
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Training of the Latent Diffusion Model")
+
+    parser.add_argument('-m', '--model', action='store', help='path to a pretrained model')
+
+    args = parser.parse_args()
+
+    train(args)
