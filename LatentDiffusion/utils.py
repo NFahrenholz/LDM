@@ -212,4 +212,7 @@ def evaluate(epoch, autoencoder, model, scheduler, x_transformer):
     fid.update(real_images, real=True)
 
     # compute the fid and print
-    print(f"\nFID: {float(fid.compute())}")
+    fid_score = float(fid.compute())
+    print(f"\nFID: {fid_score}")
+
+    return fid_score
