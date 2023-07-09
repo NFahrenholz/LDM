@@ -28,7 +28,7 @@ def train(args):
     min_fid = 9999
     start = 0
     if args.model is not None:
-        checkpoint = torch.load(args.model)
+        checkpoint = torch.load(args.model, map_location=device)
 
         model.load_state_dict(checkpoint['model_state_dict'])
         optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
