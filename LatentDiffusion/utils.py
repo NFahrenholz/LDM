@@ -199,7 +199,7 @@ def evaluate(epoch, autoencoder, model, scheduler, x_transformer):
     imgs_grid = make_grid(imgs, rows=4, cols=4)
     test_dir = os.path.join(config.output_dir, "samples")
     os.makedirs(test_dir, exist_ok=True)
-    imgs_grid.save(f"{test_dir}/{epoch:04d}.png")
+    imgs_grid.save(f"{test_dir}/{epoch + 1}.png")
 
     # Create the FID metric
     fid = FrechetInceptionDistance(normalize=True)

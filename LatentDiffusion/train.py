@@ -92,6 +92,14 @@ def train(args):
                          'optimizer_state_dict': optimizer.state_dict(),
                          'scaler_state_dict': scaler.state_dict()}
                 torch.save(state, os.path.join(config.output_dir, f"ckpt.pt"))
+
+        if (epoch + 1) % config.save_model_epochs == 0 or epoch == config.num_epochs - 1:
+            state = {'epoch': epoch + 1,
+                     'model_state_dict': model.state_dict(),
+                     'optimizer_state_dict': optimizer.state_dict(),
+                     'scaler_state_dict': scaler.state_dict()}
+            torch.save(state, os.path.join(config.output_dir, f"{epoch + 1}_ckpt.pt"))
+
 if __name__ == '__main__':
     import argparse
 
