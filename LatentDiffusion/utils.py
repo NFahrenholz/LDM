@@ -86,7 +86,7 @@ def get_conditional_model():
 
 def get_dataloader():
     dataset = Layout_Dataset(path=config.dataset_path, image_size=config.image_size)
-    dataloader = DataLoader(dataset, batch_size=config.train_bs)
+    dataloader = DataLoader(dataset, batch_size=config.train_bs, num_workers=4, pin_memory=False)
 
     return dataloader
 
