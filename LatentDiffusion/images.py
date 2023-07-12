@@ -17,9 +17,7 @@ def launch(args):
         checkpoint = torch.load(args.model, map_location=device)
 
         model.load_state_dict(checkpoint['model_state_dict'])
-        optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
         epoch = checkpoint['epoch']
-        scaler.load_state_dict(checkpoint['scaler_state_dict'])
 
     scheduler.set_timesteps(args.timesteps)
 
