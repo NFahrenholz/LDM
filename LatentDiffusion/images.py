@@ -41,9 +41,9 @@ def launch(args):
         root = tree.getroot()
 
         bboxes = get_bboxes(root)
-        all_bboxes.append(bboxes)
 
         transformed = config.transform(image=img, bboxes=bboxes)
+        all_bboxes.append(transformed['bboxes'])
 
         real_images.append(transformed['image'])
 

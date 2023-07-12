@@ -104,6 +104,8 @@ def get_xtransformer():
 
 def get_bboxes(root):
     bboxes = []
+    x_fact = config.image_size / 960
+    y_fact = config.image_size / 540
     for bbox in root.iter('bbox'):
         label = int(bbox.find('label_id').text)
 

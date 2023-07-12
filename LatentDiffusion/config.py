@@ -72,4 +72,4 @@ class TrainingConfigDesktop:
         A.Resize(image_size, image_size),
     ], bbox_params=A.BboxParams(format='pascal_voc'))
 
-config = TrainingConfig()
+config = TrainingConfigDesktop()
