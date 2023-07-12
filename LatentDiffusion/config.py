@@ -40,7 +40,7 @@ class TrainingConfig:
     ], bbox_params=A.BboxParams(format='pascal_voc'))
 
 class TrainingConfigDesktop:
-    device = "cuda"
+    device = "cpu"
 
     # paths
     dataset_path = "../data/DiffusionDataset/images.csv"
