@@ -14,7 +14,7 @@ from torchmetrics.image.fid import FrechetInceptionDistance
 from x_transformers import TransformerWrapper, Encoder
 
 from config import config
-from dataset import Uncond_Dataset, Layout_Dataset
+from dataset import Uncond_Dataset, Layout_Dataset, Layout_Dataset_Dropout
 
 def get_unconditional_model():
     device = config.device
