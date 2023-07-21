@@ -85,7 +85,7 @@ def get_conditional_model():
     return unet, autoencoder, scheduler
 
 def get_dataloader():
-    dataset = Layout_Dataset(path=config.dataset_path, image_size=config.image_size)
+    dataset = Layout_Dataset_Dropout(path=config.dataset_path, image_size=config.image_size, dropout_rate=0.2)
     dataloader = DataLoader(dataset, batch_size=config.train_bs, num_workers=4, pin_memory=False)
 
     return dataloader

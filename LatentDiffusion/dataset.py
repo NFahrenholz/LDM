@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 
 import cv2
 import torch
+import random
 
 from PIL import Image
 from torch.utils.data import Dataset
@@ -72,5 +73,38 @@ class Layout_Dataset(Dataset):
         bboxes[:] = torch.IntTensor([0, 0, 0, 0, 36])
         bboxes = bboxes.flatten()
         bboxes[:(len(transformed['bboxes']*5))] = torch.IntTensor(transformed['bboxes']).flatten()
+
+        return img_transformed, bboxes
+
+class Layout_Dataset_Dropout(Dataset):
+    def __init__(self, path, image_size, dropout_rate=0.2):
+        data = pd.read_csv(path)
+
+        self.image_paths = data["Image Path"]
+        self.image_names = data["Image Name"]
+        self.image_size = image_size
+        self.dropout_rate = dropout_rate
+
+    def __len__(self):
+        return len(self.image_paths)
+
+    def __getitem__(self, idx):
+        tree = ET.parse(f"../data/BoundingBoxes/{self.image_names[idx]}.xml")
+        root = tree.getroot()
+
+        bboxes = get_bboxes(root)
+
+        img = cv2.imread(self.image_paths[idx])
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+        transformed = config.transform(image=img, bboxes=bboxes)
+        img_transformed = T.ToTensor()(transformed['image']) * 2.0 - 1.0
+
+        bboxes = torch.zeros((20, 5), dtype=torch.int)
+        bboxes[:] = torch.IntTensor([0, 0, 0, 0, 36])
+        bboxes = bboxes.flatten()
+
+        if random.random() >= self.dropout_rate:
+            bboxes[:(len(transformed['bboxes']*5))] = torch.IntTensor(transformed['bboxes']).flatten()
 
         return img_transformed, bboxes

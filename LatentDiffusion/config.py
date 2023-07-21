@@ -37,6 +37,8 @@ class TrainingConfig:
 
     transform = A.Compose([
         A.Resize(image_size, image_size),
+        A.HorizontalFlip(p=0.5),
+        A.RandomBrightnessContrast(p=0.2)
     ], bbox_params=A.BboxParams(format='pascal_voc'))
 
 class TrainingConfigDesktop:
@@ -72,4 +74,4 @@ class TrainingConfigDesktop:
         A.Resize(image_size, image_size),
     ], bbox_params=A.BboxParams(format='pascal_voc'))
 
-config = TrainingConfigDesktop()
+config = TrainingConfig()
